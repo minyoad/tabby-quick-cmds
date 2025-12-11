@@ -43,17 +43,17 @@ git push
 
 echo Git changes committed with tag v%NEW_VERSION%
 
-REM 3. Optional npm publish
-choice /c YN /m "Publish to npm (Y/N)? "
-IF ERRORLEVEL 2 (
-    echo Skipping npm publish
-) ELSE (
-    npm publish
-    IF ERRORLEVEL 1 (
-        call :error_exit "npm publish failed"
-    )
-    echo Package published to npm
-)
+@REM REM 3. Optional npm publish
+@REM choice /c YN /m "Publish to npm (Y/N)? "
+@REM IF ERRORLEVEL 2 (
+@REM     echo Skipping npm publish
+@REM ) ELSE (
+@REM     npm publish
+@REM     IF ERRORLEVEL 1 (
+@REM         call :error_exit "npm publish failed"
+@REM     )
+@REM     echo Package published to npm
+@REM )
 
 REM Create zip file
 echo Creating zip package...
