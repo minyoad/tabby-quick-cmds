@@ -9,6 +9,7 @@ export class EditCommandModalComponent {
     allGroups: string[] = []
     command: QuickCmds
     isCapturingShortcut: boolean = false
+    specialCommandsInfo: string = 'Special commands: \\x<xx> for control characters, \\s<ms> for delays.'
 
     constructor (
         private modalInstance: NgbActiveModal,

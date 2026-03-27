@@ -14,8 +14,9 @@
             rows=6,
             style="white-space: pre-line",
             placeholder="Text to be sent",
-            [(ngModel)]='command.text', 
+            [(ngModel)]='command.text',
         )
+        .form-text.text-muted {{ specialCommandsInfo }}
 
     .form-group
         label Group
