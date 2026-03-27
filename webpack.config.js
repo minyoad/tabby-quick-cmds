@@ -24,7 +24,7 @@ module.exports = {
         loader: 'ts-loader',
         exclude: /node_modules/,
       },
-      { test: /\.pug$/, use: ['apply-loader', 'pug-loader'] },
+      { test: /\.pug$/, use: ['apply-loader', { loader: 'pug-loader', options: { cache: false } }] },
       { test: /\.scss$/, use: ['to-string-loader', 'css-loader', 'sass-loader'] },
       { test: /\.svg/, use: ['svg-inline-loader'] },
     ]

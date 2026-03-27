@@ -10,6 +10,7 @@ A plugin that provides quick command functionality for Tabby terminal.
 - Hotkey Combination Support: Send special combination key commands (like Ctrl+C, Ctrl+I, etc.)
 - Delayed Execution: Support adding delays between commands
 - Enter Control: Option to automatically add carriage return at the end of commands
+- Parameterized Commands: Support for defining and using parameters within commands
 
 ## Hotkeys
 
@@ -56,6 +57,8 @@ npm start
 3. Delayed Execution: Use \sxxx to add delay
 - \s1000: Delay 1000 milliseconds
 
+4. Parameterized Commands: Use `${parameter_name}` to define a parameter. When executing the command, a dialog will pop up asking for the value of each parameter.
+
 ## Usage Examples
 
 1. Basic Command
@@ -84,4 +87,11 @@ appendCR: true
 name: "Interrupt Process"
 text: "\x03"
 appendCR: false
+```
+
+5. Parameterized Command
+```
+name: "Git Commit"
+text: "git commit -m \"${message}\""
+appendCR: true
 ```

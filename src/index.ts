@@ -10,6 +10,7 @@ import { EditCommandModalComponent } from './components/editCommandModal.compone
 import { QuickCmdsModalComponent } from './components/quickCmdsModal.component'
 import { QuickCmdsSettingsTabComponent } from './components/quickCmdsSettingsTab.component'
 import { PromptModalComponent } from './components/promptModal.component'
+import { ParameterPromptModalComponent } from './components/parameterPromptModal.component'
 
 import { ButtonProvider } from './buttonProvider'
 import { QuickCmdsConfigProvider } from './config'
@@ -32,12 +33,14 @@ import { QuickCmdsSettingsTabProvider } from './settings'
         EditCommandModalComponent,
         QuickCmdsModalComponent,
         QuickCmdsSettingsTabComponent,
+        ParameterPromptModalComponent,
     ],
     declarations: [
         PromptModalComponent,
         EditCommandModalComponent,
         QuickCmdsModalComponent,
         QuickCmdsSettingsTabComponent,
+        ParameterPromptModalComponent,
     ],
 })
 export default class QuickCmdsModule { }

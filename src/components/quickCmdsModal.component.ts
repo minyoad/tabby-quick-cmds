@@ -5,6 +5,7 @@ import { ConfigService, AppService, BaseTabComponent, SplitTabComponent } from '
 import { QuickCmds, ICmdGroup } from '../api'
 import { EditCommandModalComponent } from './editCommandModal.component'
 import { BaseTerminalTabComponent as TerminalTabComponent } from 'terminus-terminal';
+import { ParameterPromptModalComponent } from './parameterPromptModal.component'
 
 
 interface FlattenedItem {
@@ -89,6 +90,26 @@ export class QuickCmdsModalComponent {
     }
 
     async _send (tab: BaseTabComponent, quick_cmd: QuickCmds) {    
+        const regex = /\$\{(.*?)\}/g;
+        const found = quick_cmd.text.match(regex);
+
+        if (found) {
+            const modal = this.ngbModal.open(ParameterPromptModalComponent);
+            modal.componentInstance.parameters = found.map(x => ({ name: x.substring(2, x.length - 1), value: '' }));
+            modal.result.then(values => {
+                let text = quick_cmd.text;
+                for (const name in values) {
+                    text = text.replace(`\$\{${name}\}`, values[name]);
+                }
+                const newCmd = { ...quick_cmd, text };
+                this.executeSend(tab, newCmd);
+            });
+        } else {
+            this.executeSend(tab, quick_cmd);
+        }
+    }
+
+    async executeSend (tab: BaseTabComponent, quick_cmd: QuickCmds) {
         
         if (tab instanceof SplitTabComponent) {
             this._send((tab as SplitTabComponent).getFocusedTab(), quick_cmd)

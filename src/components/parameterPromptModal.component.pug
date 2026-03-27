@@ -1,0 +1,14 @@
+.modal-header
+    h4.modal-title Enter Parameters
+.modal-body
+    .form-group(*ngFor="let param of parameters; let i = index")
+        label {{ param.name }}
+        input.form-control(
+            type='text',
+            [(ngModel)]='param.value',
+            (keydown.enter)='save()',
+            '[autofocus]'="i === 0",
+        )
+.modal-footer
+    button.btn.btn-outline-primary((click)='save()') OK
+    button.btn.btn-outline-danger((click)='cancel()') Cancel
