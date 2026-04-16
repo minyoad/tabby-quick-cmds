@@ -221,25 +221,28 @@ export class QuickCmdsModalComponent {
         this.close()
     }
 
-    edit (command?: QuickCmds) {
+    addCommand () {
+        const newCommand: QuickCmds = {
+            name: '',
+            text: this.quickCmd || '',
+            appendCR: true,
+        };
+        this.edit(newCommand);
+    }
+
+    edit (command: QuickCmds) {
         const modal = this.ngbModal.open(EditCommandModalComponent)
-        // Generate a list of all unique groups, including an empty string for 'Ungrouped'
         modal.componentInstance.allGroups = Array.from(new Set(this.cmds.map(x => x.group || '')))
-        if (command) {
-            // Ensure command.group is an empty string if it's null or undefined
-            modal.componentInstance.command = { ...command, group: command.group || '' }
-        } else {
-            modal.componentInstance.command = {
-                name: '',
-                text: '',
-                appendCR: true,
-            }
-        }
+        
+        const isNew = !this.cmds.includes(command)
+        
+        modal.componentInstance.command = { ...command, group: command.group || '' }
+        
         modal.result.then(result => {
-            if (command) {
-                Object.assign(command, result)
-            } else {
+            if (isNew) {
                 this.cmds.push(result)
+            } else {
+                Object.assign(command, result)
             }
             this.config.save()
             this.refresh()

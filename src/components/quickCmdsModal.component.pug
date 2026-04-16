@@ -13,6 +13,7 @@
             title="Automatically append a '\\n' char to the end",
             [(ngModel)]='appendCR',
         )
+        button.btn.btn-primary.ml-1((click)='addCommand()') Add
 
     .list-group.mt-3.connections-list
         ng-container(*ngFor='let group of childGroups') 
@@ -36,5 +37,4 @@
                 )
                     .mr-auto
                         div {{cmd.name}}
-                        .text-muted {{cmd.text}}{{cmd.appendCR ? "\\n" : ""}}
-                        
+                        .text-muted {{cmd.text}}
