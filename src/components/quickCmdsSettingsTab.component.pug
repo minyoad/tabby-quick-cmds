@@ -27,10 +27,10 @@ h3 Quick Commands
             .list-group-item.pl-5.d-flex.align-items-center(*ngFor='let cmd of group.cmds') 
                 .mr-auto
                     div {{cmd.name}}
-                    .text-muted {{cmd.text}} {{cmd.appendCR ? "\\n" : ""}}
+                    .text-muted
+                        span {{cmd.text}}
+                        span.ml-1(*ngIf='cmd.appendCR', title='Appends CR') ↵
                 button.btn.btn-outline-info.ml-2((click)='editCommand(cmd)')
                     i.fa.fa-pencil
                 button.btn.btn-outline-danger.ml-1((click)='deleteCommand(cmd)')
-                    i.fa.fa-trash-can 
-                    
-
+                    i.fa.fa-trash-can

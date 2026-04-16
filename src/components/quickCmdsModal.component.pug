@@ -37,4 +37,6 @@
                 )
                     .mr-auto
                         div {{cmd.name}}
-                        .text-muted {{cmd.text}}
+                        .text-muted
+                            span {{cmd.text}}
+                            span.ml-1(*ngIf='cmd.appendCR', title='Appends CR') ↵
