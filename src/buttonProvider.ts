@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core'
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap'
-import { HotkeysService, ToolbarButtonProvider, IToolbarButton, ConfigService, AppService, BaseTabComponent, SplitTabComponent } from 'terminus-core'
+import { HotkeysService, ToolbarButtonProvider, IToolbarButton, ConfigService, AppService, BaseTabComponent, SplitTabComponent } from 'tabby-core'
 import { QuickCmdsModalComponent } from './components/quickCmdsModal.component'
-import { BaseTerminalTabComponent as TerminalTabComponent } from 'terminus-terminal';
+import { BaseTerminalTabComponent as TerminalTabComponent } from 'tabby-terminal';
 import { QuickCmds } from './api'
 
 @Injectable()

@@ -1,10 +1,10 @@
 import { Component } from '@angular/core'
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap'
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap'
-import { ConfigService, AppService, BaseTabComponent, SplitTabComponent } from 'terminus-core'
+import { ConfigService, AppService, BaseTabComponent, SplitTabComponent } from 'tabby-core'
 import { QuickCmds, ICmdGroup } from '../api'
 import { EditCommandModalComponent } from './editCommandModal.component'
-import { BaseTerminalTabComponent as TerminalTabComponent } from 'terminus-terminal';
+import { BaseTerminalTabComponent as TerminalTabComponent } from 'tabby-terminal';
 import { ParameterPromptModalComponent } from './parameterPromptModal.component'
 
 
