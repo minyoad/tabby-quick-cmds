@@ -7,6 +7,7 @@ import { PromptModalComponent } from './promptModal.component'
 
 @Component({
     template: require('./quickCmdsSettingsTab.component.pug'),
+    styles: [require('./quickCmdsSettingsTab.component.scss')],
 })
 export class QuickCmdsSettingsTabComponent {
     quickCmd: string

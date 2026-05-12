@@ -1,15 +1,14 @@
 h3 Quick Commands
 
 .form-group
-    button.btn.btn-outline-primary((click)='createCommand()')
-        div.fa.fa-fw.fa-globe
+    button.btn.btn-sm.btn-outline-primary.mb-2((click)='createCommand()')
+        i.fa.fa-fw.fa-globe
         span.ml-2 Add command
-.form-group
     input.form-control.quickCmd(
-        type='text', 
-        [(ngModel)]='quickCmd', 
-        autofocus, 
-        placeholder='enter to filter', 
+        type='text',
+        [(ngModel)]='quickCmd',
+        autofocus,
+        placeholder='enter to filter',
         (ngModelChange)='refresh()',
         (keyup.esc)='cancelFilter()'
     )
@@ -19,18 +18,20 @@ h3 Quick Commands
             .fa.fa-fw.fa-chevron-right(*ngIf='groupCollapsed[group.name]')
             .fa.fa-fw.fa-chevron-down(*ngIf='!groupCollapsed[group.name]')
             span.ml-3.mr-auto {{group.name || "Ungrouped"}}
-            button.btn.btn-outline-info.ml-2((click)='editGroup(group)')
-                i.fa.fa-pencil
-            button.btn.btn-outline-danger.ml-1((click)='deleteGroup(group)')
-                i.fa.fa-trash-can 
+            .command-buttons
+                button.btn.btn-sm.btn-outline-info((click)='editGroup(group); $event.stopPropagation()')
+                    i.fa.fa-pencil
+                button.btn.btn-sm.btn-outline-danger((click)='deleteGroup(group); $event.stopPropagation()')
+                    i.fa.fa-trash-can
         ng-container(*ngIf='!groupCollapsed[group.name]')
-            .list-group-item.pl-5.d-flex.align-items-center(*ngFor='let cmd of group.cmds') 
+            .list-group-item.pl-5.d-flex.align-items-start(*ngFor='let cmd of group.cmds') 
                 .mr-auto
                     div {{cmd.name}}
                     .text-muted
                         span {{cmd.text}}
                         span.ml-1(*ngIf='cmd.appendCR', title='Appends CR') ↵
-                button.btn.btn-outline-info.ml-2((click)='editCommand(cmd)')
-                    i.fa.fa-pencil
-                button.btn.btn-outline-danger.ml-1((click)='deleteCommand(cmd)')
-                    i.fa.fa-trash-can
+                .command-buttons
+                    button.btn.btn-outline-info((click)='editCommand(cmd)')
+                        i.fa.fa-pencil
+                    button.btn.btn-outline-danger((click)='deleteCommand(cmd)')
+                        i.fa.fa-trash-can

@@ -48,11 +48,14 @@
     "tabby-terminal": "^1.0.0"
   },
   "dependencies": {
+    "@angular/animations": "^15.2.6",
     "@angular/common": "^15.2.6",
     "@angular/core": "^15.2.6",
     "@angular/forms": "^15.2.6",
-    "@ng-bootstrap/ng-bootstrap": "^14.1.0",
-    "rxjs": "^7.8.2",
+    "@angular/platform-browser": "^15.2.6",
+    "@ng-bootstrap/ng-bootstrap": "^12.0.0",
+    "ngx-toastr": "^14.3.0",
+    "rxjs": "~7.5.0",
     "tabby-core": "^1.0.156",
     "tabby-settings": "^1.0.156",
     "tabby-terminal": "^1.0.156",

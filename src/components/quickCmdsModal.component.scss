@@ -1,24 +1,21 @@
-.list-group.connections-list {
-    display: block;
-    max-height: 70vh;
-    overflow-y: auto;
+:host {
+  .input-group {
+    display: flex !important;
+    width: 100% !important;
+    margin-bottom: 1rem;
 
-    .list-group-item {
-        &.active {
-            background-color: #007bff !important;
-            border-color: #007bff !important;
-            color: white !important;
-            .text-muted {
-                color: rgba(255, 255, 255, 0.8) !important;
-            }
-        }
+    .form-control {
+      flex: 1 1 auto !important;
+      width: 1% !important;
     }
-}
 
-.quickCmd {
-    flex: 2 !important
-}
+    .btn {
+      flex: 0 0 auto !important;
+    }
+  }
 
-.quickCmdContainer {
-    display: flex !important
+  .list-group {
+    max-height: 60vh;
+    overflow-y: auto;
+  }
 }

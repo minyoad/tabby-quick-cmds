@@ -1,19 +1,15 @@
 .modal-body
-    div.quickCmdContainer
+    .input-group
         input.form-control.quickCmd(
-            type='text', 
-            [(ngModel)]='quickCmd', 
-            autofocus, 
-            placeholder='Ctrl + Enter send to all', 
+            type='text',
+            [(ngModel)]='quickCmd',
+            autofocus,
+            placeholder='Ctrl + Enter send to all',
             (ngModelChange)='refresh()',
             (keyup.enter)='quickSend()',
-            (keyup.control.enter)='quickSendAll()',
+            (keyup.control.enter)='quickSendAll()'
         )
-        toggle.ml-1(
-            title="Automatically append a '\\n' char to the end",
-            [(ngModel)]='appendCR',
-        )
-        button.btn.btn-primary.ml-1((click)='addCommand()') Add
+        button.btn.btn-primary((click)='addCommand()', title='Add a new command') Add
 
     .list-group.mt-3.connections-list
         ng-container(*ngFor='let group of childGroups') 

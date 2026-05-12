@@ -1,0 +1,13 @@
+.list-group-item {
+    position: relative;
+    padding-right: 100px; /* Add padding to prevent text from overlapping with buttons */
+}
+
+.command-buttons {
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+    display: flex;
+    gap: 5px; /* Add some space between the buttons */
+}

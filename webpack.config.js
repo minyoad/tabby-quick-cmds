@@ -33,6 +33,7 @@ module.exports = {
     /^rxjs/,
     /^@angular/,
     /^@ng-bootstrap/,
-    /^terminus-/,
+    /^ngx-toastr/,
+    /^tabby-/,
   ]
 }

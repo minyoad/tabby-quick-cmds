@@ -35,5 +35,12 @@ import { QuickCmdsSettingsTabProvider } from './settings'
         QuickCmdsSettingsTabComponent,
         ParameterPromptModalComponent,
     ],
+    entryComponents: [
+        PromptModalComponent,
+        EditCommandModalComponent,
+        QuickCmdsModalComponent,
+        QuickCmdsSettingsTabComponent,
+        ParameterPromptModalComponent,
+    ],
 })
 export default class QuickCmdsModule { }
