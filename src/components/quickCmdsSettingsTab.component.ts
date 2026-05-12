@@ -1,6 +1,6 @@
 import { Component } from '@angular/core'
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap'
-import { ConfigService } from 'terminus-core'
+import { ConfigService } from 'tabby-core'
 import { QuickCmds, ICmdGroup } from '../api'
 import { EditCommandModalComponent } from './editCommandModal.component'
 import { PromptModalComponent } from './promptModal.component'
