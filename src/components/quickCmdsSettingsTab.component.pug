@@ -30,6 +30,7 @@ h3 Quick Commands
                     .text-muted
                         span {{cmd.text}}
                         span.ml-1(*ngIf='cmd.appendCR', title='Appends CR') ↵
+                        span.badge.bg-secondary.ml-2(*ngIf='cmd.profileIds?.length') SSH
                 .command-buttons
                     button.btn.btn-outline-info((click)='editCommand(cmd)')
                         i.fa.fa-pencil

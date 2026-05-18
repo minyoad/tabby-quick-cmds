@@ -11,3 +11,8 @@
     display: flex;
     gap: 5px; /* Add some space between the buttons */
 }
+
+.ssh-profile-list {
+    max-height: 220px;
+    overflow: auto;
+}

@@ -4,6 +4,7 @@ import { HotkeysService, ToolbarButtonProvider, IToolbarButton, ConfigService, A
 import { QuickCmdsModalComponent } from './components/quickCmdsModal.component'
 import { BaseTerminalTabComponent as TerminalTabComponent } from 'tabby-terminal';
 import { QuickCmds } from './api'
+import { commandVisibleForContext, getRuntimeSSHContext } from './sshScope'
 
 @Injectable()
 export class ButtonProvider extends ToolbarButtonProvider {
@@ -86,7 +87,9 @@ export class ButtonProvider extends ToolbarButtonProvider {
             
             // Check if this shortcut matches any command
             const commands = this.config.store.qc.cmds
-            const matchedCommand = commands.find(cmd => cmd.shortcut === shortcut)
+            const context = getRuntimeSSHContext(this.app.activeTab)
+            const groups = this.getGroupScopes()
+            const matchedCommand = commands.find(cmd => cmd.shortcut === shortcut && commandVisibleForContext(cmd, groups, context))
             
             // If a command is matched, prevent the default behavior to avoid sending extra escape sequences
             if (matchedCommand) {
@@ -99,7 +102,9 @@ export class ButtonProvider extends ToolbarButtonProvider {
 
     async executeCommandByShortcut(hotkey: string) {
         const commands = this.config.store.qc.cmds
-        const matchedCommand = commands.find(cmd => cmd.shortcut === hotkey)
+        const context = getRuntimeSSHContext(this.app.activeTab)
+        const groups = this.getGroupScopes()
+        const matchedCommand = commands.find(cmd => cmd.shortcut === hotkey && commandVisibleForContext(cmd, groups, context))
         
         if (matchedCommand) {
             // Use count +1 and persist
@@ -114,6 +119,9 @@ export class ButtonProvider extends ToolbarButtonProvider {
     async _send (tab: BaseTabComponent, quick_cmd: QuickCmds) {
         if (tab instanceof SplitTabComponent) {
             this._send((tab as SplitTabComponent).getFocusedTab(), quick_cmd)
+            return
+        }
+        if (!commandVisibleForContext(quick_cmd, this.getGroupScopes(), getRuntimeSSHContext(tab))) {
             return
         }
         if (tab instanceof TerminalTabComponent) {
@@ -201,5 +209,13 @@ export class ButtonProvider extends ToolbarButtonProvider {
                 this.activate()
             }
         }]
+    }
+
+    private getGroupScopes () {
+        return (this.config.store.qc.groups ?? []).map(group => ({
+            name: group.name,
+            cmds: [],
+            profileIds: group.profileIds ?? [],
+        }))
     }
 }
