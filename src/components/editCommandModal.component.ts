@@ -1,15 +1,23 @@
 import { Component, HostListener } from '@angular/core'
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap'
 import { QuickCmds, SSHProfileOption } from '../api'
+import { profileMatchesQuery } from '../sshScope'
 
 @Component({
     template: require('./editCommandModal.component.pug'),
+    styles: [`
+        .ssh-profile-list {
+            max-height: 220px;
+            overflow: auto;
+        }
+    `],
 })
 export class EditCommandModalComponent {
     allGroups: string[] = []
     profiles: SSHProfileOption[] = []
     command: QuickCmds
     isCapturingShortcut: boolean = false
+    sshProfileQuery: string = ''
     specialCommandsInfo: string = 'Special commands:<br> \\x<xx> for control characters, \\s<ms> for delays, ${parameterName} for parameters.'
 
     constructor (
@@ -83,6 +91,10 @@ export class EditCommandModalComponent {
     startCaptureShortcut(event: Event) {
         event.preventDefault()
         this.isCapturingShortcut = true
+    }
+
+    get filteredProfiles (): SSHProfileOption[] {
+        return this.profiles.filter(profile => profileMatchesQuery(profile, this.sshProfileQuery))
     }
 
     isProfileSelected (profileId: string): boolean {
