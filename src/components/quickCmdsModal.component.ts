@@ -1,11 +1,12 @@
 import { Component } from '@angular/core'
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap'
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap'
-import { ConfigService, AppService, BaseTabComponent, SplitTabComponent } from 'tabby-core'
-import { QuickCmds, ICmdGroup } from '../api'
+import { ConfigService, AppService, BaseTabComponent, SplitTabComponent, ProfilesService } from 'tabby-core'
+import { QuickCmds, ICmdGroup, SSHProfileOption } from '../api'
 import { EditCommandModalComponent } from './editCommandModal.component'
 import { BaseTerminalTabComponent as TerminalTabComponent } from 'tabby-terminal';
 import { ParameterPromptModalComponent } from './parameterPromptModal.component'
+import { commandVisibleForContext, getRuntimeSSHContext } from '../sshScope'
 
 
 interface FlattenedItem {
@@ -26,6 +27,7 @@ export class QuickCmdsModalComponent {
     quickCmd: string
     appendCR: boolean
     childGroups: ICmdGroup[]
+    profiles: SSHProfileOption[] = []
     groupCollapsed: {[id: string]: boolean} = {}
     expandedGroups: { [id: string]: boolean } = {}
     private flattenedItems: FlattenedItem[] = []
@@ -40,6 +42,7 @@ export class QuickCmdsModalComponent {
         private ngbModal: NgbModal,
         private config: ConfigService,
         private app: AppService,
+        private profilesService: ProfilesService,
     ) { }
 
     ngOnInit () {
@@ -50,9 +53,23 @@ export class QuickCmdsModalComponent {
         } catch {}
 
         this.cmds = this.config.store.qc.cmds
+        this.config.store.qc.groups = this.config.store.qc.groups ?? []
         this.appendCR = true
         this.refresh()
         this.updateFlattenedItems()
+        this.loadProfiles()
+    }
+
+    async loadProfiles () {
+        const profiles = await this.profilesService.getProfiles()
+        this.profiles = profiles
+            .filter(profile => profile.type === 'ssh' && !!profile.id)
+            .map(profile => ({
+                id: profile.id,
+                name: profile.name,
+                description: this.describeProfile(profile),
+            }))
+            .sort((a, b) => a.name.localeCompare(b.name))
     }
 
     quickSend () {
@@ -113,6 +130,10 @@ export class QuickCmdsModalComponent {
         
         if (tab instanceof SplitTabComponent) {
             this._send((tab as SplitTabComponent).getFocusedTab(), quick_cmd)
+            return
+        }
+        if (!commandVisibleForContext(quick_cmd, this.getGroupScopes(), getRuntimeSSHContext(tab))) {
+            return
         }
         if (tab instanceof TerminalTabComponent) {
             let currentTab = tab as TerminalTabComponent
@@ -226,6 +247,7 @@ export class QuickCmdsModalComponent {
             name: '',
             text: this.quickCmd || '',
             appendCR: true,
+            profileIds: [],
         };
         this.edit(newCommand);
     }
@@ -233,6 +255,7 @@ export class QuickCmdsModalComponent {
     edit (command: QuickCmds) {
         const modal = this.ngbModal.open(EditCommandModalComponent)
         modal.componentInstance.allGroups = Array.from(new Set(this.cmds.map(x => x.group || '')))
+        modal.componentInstance.profiles = this.profiles
         
         const isNew = !this.cmds.includes(command)
         
@@ -283,7 +306,7 @@ export class QuickCmdsModalComponent {
                 return (cmd.name + cmd.group + cmd.text).toLowerCase().includes(this.quickCmd.toLowerCase())
             }
             return true
-        })
+        }).filter(cmd => commandVisibleForContext(cmd, this.getGroupScopes(), getRuntimeSSHContext(this.app.activeTab)))
 
         for (let cmd of cmds) {
             cmd.group = cmd.group || ''
@@ -292,6 +315,7 @@ export class QuickCmdsModalComponent {
                 group = {
                     name: cmd.group,
                     cmds: [],
+                    profileIds: this.getGroupProfileIds(cmd.group),
                 }
                 this.childGroups.push(group)
             }
@@ -331,6 +355,7 @@ export class QuickCmdsModalComponent {
         if (this.quickCmd) {
             // Filter commands that match the search query
             const filteredCmds = this.cmds.filter(cmd => (cmd.name + (cmd.group || '') + cmd.text).toLowerCase().includes(this.quickCmd.toLowerCase()))
+                .filter(cmd => commandVisibleForContext(cmd, this.getGroupScopes(), getRuntimeSSHContext(this.app.activeTab)))
             // Create a temporary set to track groups that contain filtered commands
             const groupsWithFilteredCmds = new Set<string>()
             filteredCmds.forEach(cmd => groupsWithFilteredCmds.add(cmd.group || ''))
@@ -512,5 +537,29 @@ export class QuickCmdsModalComponent {
 
     private getSelectedItem() {
         return this.flattenedItems[this.getSelectedIndex()]
+    }
+
+    private getGroupScopes (): ICmdGroup[] {
+        return (this.config.store.qc.groups ?? []).map(group => ({
+            name: group.name,
+            cmds: [],
+            profileIds: group.profileIds ?? [],
+        }))
+    }
+
+    private getGroupProfileIds (name: string): string[] {
+        return (this.config.store.qc.groups ?? []).find(group => group.name === name)?.profileIds ?? []
+    }
+
+    private describeProfile (profile: any): string {
+        const host = profile.options?.host
+        const user = profile.options?.user
+        const port = profile.options?.port
+
+        if (!host) {
+            return profile.id
+        }
+
+        return `${user ? `${user}@` : ''}${host}${port ? `:${port}` : ''}`
     }
 }

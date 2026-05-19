@@ -55,6 +55,19 @@
         toggle(
             [(ngModel)]='command.appendCR',
         )
+
+    .form-group
+        label SSH profiles
+        .form-text.text-muted.mb-2 Leave empty to show this command in every terminal tab.
+        .list-group.ssh-profile-list
+            label.list-group-item.d-flex.align-items-center(*ngFor='let profile of profiles')
+                input.form-check-input.me-2(
+                    type='checkbox',
+                    [checked]='isProfileSelected(profile.id)',
+                    (change)='toggleProfile(profile.id)',
+                )
+                span.mr-auto {{ profile.name }}
+                small.text-muted {{ profile.description }}
                     
 .modal-footer
     button.btn.btn-outline-primary((click)='save()') Save

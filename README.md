@@ -11,6 +11,7 @@ A plugin that provides quick command functionality for Tabby terminal.
 - Delayed Execution: Support adding delays between commands
 - Enter Control: Option to automatically add carriage return at the end of commands
 - Parameterized Commands: Support for defining and using parameters within commands
+- SSH Profile Scoping: Limit commands or command groups to specific saved SSH profiles
 
 ## Hotkeys
 
@@ -40,6 +41,17 @@ Each command contains the following properties:
 - text: Command content
 - appendCR: Whether to automatically add carriage return (true/false)
 - group: Command group (optional)
+- SSH profiles: Optional list of saved SSH profiles where the command is available
+
+### SSH Profile Scoping
+
+Commands and groups can be bound to one or more saved SSH profiles from Tabby's
+Profiles & connections settings.
+
+- If no SSH profile is selected, the command or group is available in every terminal tab.
+- If one or more SSH profiles are selected, the command or group is shown only when the active tab uses one of those profiles.
+- If both a command and its group have SSH profile limits, both limits must match.
+- Non-matching commands are hidden from the quick command menu and ignored by command shortcuts.
 
 ### Special Syntax
 

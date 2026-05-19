@@ -1,12 +1,13 @@
 import { Component, HostListener } from '@angular/core'
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap'
-import { QuickCmds } from '../api'
+import { QuickCmds, SSHProfileOption } from '../api'
 
 @Component({
     template: require('./editCommandModal.component.pug'),
 })
 export class EditCommandModalComponent {
     allGroups: string[] = []
+    profiles: SSHProfileOption[] = []
     command: QuickCmds
     isCapturingShortcut: boolean = false
     specialCommandsInfo: string = 'Special commands:<br> \\x<xx> for control characters, \\s<ms> for delays, ${parameterName} for parameters.'
@@ -84,7 +85,18 @@ export class EditCommandModalComponent {
         this.isCapturingShortcut = true
     }
 
+    isProfileSelected (profileId: string): boolean {
+        return (this.command.profileIds ?? []).includes(profileId)
+    }
+
+    toggleProfile (profileId: string) {
+        const ids = new Set(this.command.profileIds ?? [])
+        ids.has(profileId) ? ids.delete(profileId) : ids.add(profileId)
+        this.command.profileIds = Array.from(ids)
+    }
+
     save () {
+        this.command.profileIds = this.command.profileIds ?? []
         this.modalInstance.close(this.command)
     }
 

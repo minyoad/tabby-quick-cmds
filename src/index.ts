@@ -11,6 +11,7 @@ import { QuickCmdsModalComponent } from './components/quickCmdsModal.component'
 import { QuickCmdsSettingsTabComponent } from './components/quickCmdsSettingsTab.component'
 import { PromptModalComponent } from './components/promptModal.component'
 import { ParameterPromptModalComponent } from './components/parameterPromptModal.component'
+import { EditGroupModalComponent } from './components/editGroupModal.component'
 
 import { ButtonProvider } from './buttonProvider'
 import { QuickCmdsConfigProvider } from './config'
@@ -34,6 +35,7 @@ import { QuickCmdsSettingsTabProvider } from './settings'
         QuickCmdsModalComponent,
         QuickCmdsSettingsTabComponent,
         ParameterPromptModalComponent,
+        EditGroupModalComponent,
     ],
     entryComponents: [
         PromptModalComponent,
@@ -41,6 +43,7 @@ import { QuickCmdsSettingsTabProvider } from './settings'
         QuickCmdsModalComponent,
         QuickCmdsSettingsTabComponent,
         ParameterPromptModalComponent,
+        EditGroupModalComponent,
     ],
 })
 export default class QuickCmdsModule { }
