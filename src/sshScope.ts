@@ -45,3 +45,16 @@ export function commandVisibleForContext (
 export function profileLabel (profile: SSHProfileOption): string {
     return profile.description ? `${profile.name} (${profile.description})` : profile.name
 }
+
+export function profileMatchesQuery (profile: SSHProfileOption, query: string): boolean {
+    const normalizedQuery = query.trim().toLowerCase()
+    if (!normalizedQuery) {
+        return true
+    }
+
+    return [
+        profile.id,
+        profile.name,
+        profile.description,
+    ].some(value => (value ?? '').toLowerCase().includes(normalizedQuery))
+}

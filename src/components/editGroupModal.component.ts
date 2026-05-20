@@ -1,6 +1,7 @@
 import { Component, Input } from '@angular/core'
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap'
 import { ICmdGroup, SSHProfileOption } from '../api'
+import { profileMatchesQuery } from '../sshScope'
 
 @Component({
     template: `
@@ -12,12 +13,14 @@ import { ICmdGroup, SSHProfileOption } from '../api'
             <div class="form-group mt-3">
                 <label>SSH profiles</label>
                 <div class="form-text text-muted mb-2">Leave empty to show this group in every terminal tab.</div>
+                <input class="form-control mb-2" type="text" placeholder="Search SSH profiles" [(ngModel)]="sshProfileQuery">
                 <div class="list-group ssh-profile-list">
-                    <label class="list-group-item d-flex align-items-center" *ngFor="let profile of profiles">
+                    <label class="list-group-item d-flex align-items-center" *ngFor="let profile of filteredProfiles">
                         <input class="form-check-input me-2" type="checkbox" [checked]="isSelected(profile.id)" (change)="toggleProfile(profile.id)">
                         <span class="me-auto">{{ profile.name }}</span>
                         <small class="text-muted">{{ profile.description }}</small>
                     </label>
+                    <div class="list-group-item text-muted" *ngIf="!filteredProfiles.length">No matching SSH profiles</div>
                 </div>
             </div>
         </div>
@@ -36,10 +39,15 @@ import { ICmdGroup, SSHProfileOption } from '../api'
 export class EditGroupModalComponent {
     @Input() group: ICmdGroup
     @Input() profiles: SSHProfileOption[] = []
+    sshProfileQuery: string = ''
 
     constructor (
         private modalInstance: NgbActiveModal,
     ) {
+    }
+
+    get filteredProfiles (): SSHProfileOption[] {
+        return this.profiles.filter(profile => profileMatchesQuery(profile, this.sshProfileQuery))
     }
 
     isSelected (profileId: string): boolean {
