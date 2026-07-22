@@ -8,8 +8,8 @@ on:
 
 permissions:
   id-token: write  # Required for OIDC
-  contents: read
-  
+  contents: write  # Required for release creation
+
 jobs:
   publish:
     runs-on: ubuntu-latest
@@ -34,3 +34,17 @@ jobs:
 
       - name: Publish to npm
         run: npm publish --provenance --access public
+
+      - name: Package release assets
+        if: startsWith(github.ref, 'refs/tags/')
+        run: |
+          VERSION=${GITHUB_REF#refs/tags/}
+          zip -r "tabby-quick-cmds-${VERSION}.zip" dist package.json README.md README_CN.md LICENSE CHANGELOG.md
+
+      - name: Create GitHub Release
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          name: ${{ github.ref_name }}
+          generate_release_notes: true
+          files: tabby-quick-cmds-${{ github.ref_name }}.zip
