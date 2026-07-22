@@ -19,10 +19,22 @@ export class EditCommandModalComponent {
     isCapturingShortcut: boolean = false
     sshProfileQuery: string = ''
     specialCommandsInfo: string = 'Special commands:<br> \\x<xx> for control characters, \\s<ms> for delays, ${parameterName} for parameters.'
+    private _groupSavedValue: string = ''
 
     constructor (
         private modalInstance: NgbActiveModal,
     ) {
+    }
+
+    onGroupFocus () {
+        this._groupSavedValue = this.command.group || ''
+        this.command.group = ''
+    }
+
+    onGroupBlur () {
+        if (!this.command.group) {
+            this.command.group = this._groupSavedValue
+        }
     }
 
     @HostListener('document:keydown', ['$event'])

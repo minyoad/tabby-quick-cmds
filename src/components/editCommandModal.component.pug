@@ -20,9 +20,15 @@
 
     .form-group
         label Group
-        select.form-control(
+        input.form-control(
+            type='text',
+            list='groupList',
+            placeholder='Select or type a group name',
             [(ngModel)]='command.group',
+            (focus)='onGroupFocus()',
+            (blur)='onGroupBlur()',
         )
+        datalist#groupList
             option([value]="") Ungrouped
             option(*ngFor="let group of allGroups", [value]="group") {{ group }}
 
