@@ -1,4 +1,4 @@
-import { Component, HostListener } from '@angular/core'
+import { Component, HostListener, OnInit } from '@angular/core'
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap'
 import { QuickCmds, SSHProfileOption } from '../api'
 import { profileMatchesQuery } from '../sshScope'
@@ -12,18 +12,23 @@ import { profileMatchesQuery } from '../sshScope'
         }
     `],
 })
-export class EditCommandModalComponent {
+export class EditCommandModalComponent implements OnInit {
     allGroups: string[] = []
     profiles: SSHProfileOption[] = []
-    command: QuickCmds
+    command: QuickCmds = undefined!
     isCapturingShortcut: boolean = false
     sshProfileQuery: string = ''
     specialCommandsInfo: string = 'Special commands:<br> \\x<xx> for control characters, \\s<ms> for delays, ${parameterName} for parameters.'
+    sshEnabled: boolean = false
     private _groupSavedValue: string = ''
 
     constructor (
         private modalInstance: NgbActiveModal,
     ) {
+    }
+
+    ngOnInit () {
+        this.sshEnabled = (this.command?.profileIds?.length ?? 0) > 0
     }
 
     onGroupFocus () {
@@ -119,7 +124,16 @@ export class EditCommandModalComponent {
         this.command.profileIds = Array.from(ids)
     }
 
+    onSshToggle () {
+        if (!this.sshEnabled) {
+            this.command.profileIds = []
+        }
+    }
+
     save () {
+        if (!this.sshEnabled) {
+            this.command.profileIds = []
+        }
         this.command.profileIds = this.command.profileIds ?? []
         this.modalInstance.close(this.command)
     }

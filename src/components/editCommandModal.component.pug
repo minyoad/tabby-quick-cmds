@@ -62,9 +62,17 @@
             [(ngModel)]='command.appendCR',
         )
 
-    .form-group
+    .form-line
+        .header
+            .title Limit to SSH profiles
+            .description Only show this command in selected SSH terminal tabs
+        toggle(
+            [(ngModel)]='sshEnabled',
+            (ngModelChange)='onSshToggle()',
+        )
+
+    .form-group(*ngIf='sshEnabled')
         label SSH profiles
-        .form-text.text-muted.mb-2 Leave empty to show this command in every terminal tab.
         input.form-control.mb-2(
             type='text',
             placeholder='Search SSH profiles',
