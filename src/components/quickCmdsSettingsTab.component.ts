@@ -15,6 +15,7 @@ export class QuickCmdsSettingsTabComponent {
     childGroups: ICmdGroup[]
     groupCollapsed: {[id: string]: boolean} = {}
     profiles: SSHProfileOption[] = []
+    showFullCommand: boolean = true
 
     constructor (
         public config: ConfigService,
@@ -23,6 +24,7 @@ export class QuickCmdsSettingsTabComponent {
     ) {
         this.commands = this.config.store.qc.cmds
         this.config.store.qc.groups = this.config.store.qc.groups ?? []
+        this.showFullCommand = localStorage.getItem('qcShowFullCommand') !== 'false'
         this.refresh()
         this.loadProfiles()
     }
@@ -122,6 +124,12 @@ export class QuickCmdsSettingsTabComponent {
     cancelFilter(){
         this.quickCmd=''
         this.refresh()
+    }
+
+    onShowFullCommandChange (value: boolean) {
+        const enabled = value !== false
+        this.showFullCommand = enabled
+        localStorage.setItem('qcShowFullCommand', String(enabled))
     }
 
     refresh () {

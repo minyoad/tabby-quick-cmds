@@ -37,6 +37,10 @@ export class QuickCmdsModalComponent {
     // 新增：记录每条命令的使用次数
     private usageCount: Record<string, number> = {}
 
+    get showFullCommand (): boolean {
+        return localStorage.getItem('qcShowFullCommand') !== 'false'
+    }
+
     constructor (
         public modalInstance: NgbActiveModal,
         private ngbModal: NgbModal,

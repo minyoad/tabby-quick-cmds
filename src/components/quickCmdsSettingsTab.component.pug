@@ -1,5 +1,14 @@
 h3 Quick Commands
 
+.form-line.mb-3
+    .header
+        .title Show full command in menu
+        .description ON: show full command as subtitle under the name. OFF: hide the full command.
+    toggle(
+        [ngModel]='showFullCommand',
+        (ngModelChange)='onShowFullCommandChange($event)',
+    )
+
 .form-group
     button.btn.btn-sm.btn-outline-primary.mb-2((click)='createCommand()')
         i.fa.fa-fw.fa-globe
