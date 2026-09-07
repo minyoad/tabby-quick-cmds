@@ -10,6 +10,7 @@ export class QuickCmdsConfigProvider extends ConfigProvider {
             'qc': [
                 'Alt-Q',
             ],
+            'toggle-quick-cmds': ['Cmd-P', 'Alt-P'],
         },
     }
 

@@ -17,6 +17,9 @@ import { ButtonProvider } from './buttonProvider'
 import { QuickCmdsConfigProvider } from './config'
 import { QuickCmdsSettingsTabProvider } from './settings'
 
+import { HotkeyProvider } from 'tabby-core'
+import { QuickCmdsHotkeyProvider } from './hotkeys'
+
 @NgModule({
     imports: [
         NgbModule,
@@ -28,6 +31,17 @@ import { QuickCmdsSettingsTabProvider } from './settings'
         { provide: ToolbarButtonProvider, useClass: ButtonProvider, multi: true },
         { provide: ConfigProvider, useClass: QuickCmdsConfigProvider, multi: true },
         { provide: SettingsTabProvider, useClass: QuickCmdsSettingsTabProvider, multi: true },
+        { provide: HotkeyProvider, useClass: QuickCmdsHotkeyProvider, multi: true },
+        {
+            provide: 'HOTKEY_DEFAULTS',
+            useValue: {
+                'toggle-quick-cmds': [
+                    'Cmd-P', // Default for macOS
+                    'Alt-P',       // Fallback
+                ],
+            },
+            multi: true,
+        },
     ],
     declarations: [
         PromptModalComponent,
