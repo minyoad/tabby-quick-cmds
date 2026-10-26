@@ -16,6 +16,91 @@ export class QuickCmdsSettingsTabComponent {
     groupCollapsed: {[id: string]: boolean} = {}
     profiles: SSHProfileOption[] = []
     showFullCommand: boolean = true
+    private draggedCommand: QuickCmds | null = null
+    private draggedGroup: string | null = null
+
+    startCommandDrag (event: DragEvent, command: QuickCmds) {
+        this.beginDrag(event)
+        if (!this.quickCmd) this.draggedCommand = command
+    }
+
+    startGroupDrag (event: DragEvent, group: ICmdGroup) {
+        this.beginDrag(event)
+        if (!this.quickCmd) this.draggedGroup = group.name || ''
+    }
+
+    private beginDrag (event: DragEvent) {
+        this.endDrag()
+        event.stopPropagation()
+        if (this.quickCmd) {
+            event.preventDefault()
+            return
+        }
+        if (event.dataTransfer) {
+            event.dataTransfer.effectAllowed = 'move'
+            event.dataTransfer.setData('text/plain', 'quick-command-sort')
+        }
+    }
+
+    endDrag () {
+        this.draggedCommand = null
+        this.draggedGroup = null
+    }
+
+    allowCommandDrop (event: DragEvent, command: QuickCmds) {
+        if (!this.quickCmd && this.draggedCommand &&
+            (this.draggedCommand.group || '') === (command.group || '')) {
+            event.preventDefault()
+            event.stopPropagation()
+        }
+    }
+
+    allowGroupDrop (event: DragEvent) {
+        if (!this.quickCmd && this.draggedGroup !== null) event.preventDefault()
+    }
+
+    dropCommand (event: DragEvent, target: QuickCmds) {
+        event.preventDefault()
+        event.stopPropagation()
+        const source = this.draggedCommand
+        this.endDrag()
+        if (this.quickCmd || !source || source === target ||
+            (source.group || '') !== (target.group || '')) return
+        // Reorder only this group's occupied slots, preserving other groups.
+        const slots = this.commands.map((cmd, index) => ({ cmd, index }))
+            .filter(item => (item.cmd.group || '') === (target.group || ''))
+        const ordered = slots.map(item => item.cmd)
+        const from = ordered.indexOf(source)
+        const to = ordered.indexOf(target)
+        if (from < 0 || to < 0) return
+        ordered.splice(from, 1)
+        ordered.splice(to, 0, source)
+        slots.forEach((item, index) => { this.commands[item.index] = ordered[index] })
+        this.saveOrder()
+    }
+
+    dropGroup (event: DragEvent, target: ICmdGroup) {
+        event.preventDefault()
+        event.stopPropagation()
+        const source = this.draggedGroup
+        this.endDrag()
+        if (this.quickCmd || source === null) return
+        const names = Array.from(new Set(this.commands.map(cmd => cmd.group || '')))
+        const from = names.indexOf(source)
+        const to = names.indexOf(target.name || '')
+        if (from < 0 || to < 0 || from === to) return
+        names.splice(from, 1)
+        names.splice(to, 0, source)
+        this.commands = names.reduce((all, name) =>
+            all.concat(this.commands.filter(cmd => (cmd.group || '') === name)), [] as QuickCmds[])
+        this.saveOrder()
+    }
+
+    private saveOrder () {
+        this.config.store.qc.cmds = this.commands
+        this.config.save()
+        this.refresh()
+    }
 
     constructor (
         public config: ConfigService,

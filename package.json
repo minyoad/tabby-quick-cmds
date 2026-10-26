@@ -12,6 +12,7 @@
   "typings": "dist/index.d.ts",
   "scripts": {
     "build": "webpack --progress --color",
+    "test:sorting": "node tests/sorting.test.cjs",
     "watch": "webpack --progress --color --watch",
     "pub": "npm run pack:zip",
     "pack:zip": "powershell Compress-Archive -Path dist,package.json,README.md,README_CN.md,LICENSE -DestinationPath tabby-quick-cmds-v$env:npm_package_version.zip -Force",

@@ -21,9 +21,12 @@ h3 Quick Commands
         (ngModelChange)='refresh()',
         (keyup.esc)='cancelFilter()'
     )
+p.text-muted.small Drag the grip to reorder groups or commands within a group. Clear the filter to enable sorting.
 .list-group.mt-3.mb-3
     ng-container(*ngFor='let group of childGroups')
-        .list-group-item.list-group-item-action.d-flex.align-items-center.qc-row((click)='groupCollapsed[group.name] = !groupCollapsed[group.name]')
+        .list-group-item.list-group-item-action.d-flex.align-items-center.qc-row((click)='groupCollapsed[group.name] = !groupCollapsed[group.name]', (dragover)='allowGroupDrop($event)', (drop)='dropGroup($event, group)')
+            span.drag-handle.mr-2([draggable]='!quickCmd', [class.disabled]='!!quickCmd', (dragstart)='startGroupDrag($event, group)', (dragend)='endDrag()', (click)='$event.stopPropagation()', title='Drag to reorder group', aria-label='Drag to reorder group')
+                i.fa.fa-grip-vertical
             .fa.fa-fw.fa-chevron-right(*ngIf='groupCollapsed[group.name]')
             .fa.fa-fw.fa-chevron-down(*ngIf='!groupCollapsed[group.name]')
             span.ml-3.mr-auto {{group.name || "Ungrouped"}}
@@ -37,7 +40,9 @@ h3 Quick Commands
                     button.btn.btn-sm.btn-outline-danger((click)='deleteGroup(group)', title='Delete group')
                         i.fa.fa-trash-can
         ng-container(*ngIf='!groupCollapsed[group.name]')
-            .list-group-item.pl-5.d-flex.align-items-center.qc-row(*ngFor='let cmd of group.cmds')
+            .list-group-item.pl-5.d-flex.align-items-center.qc-row(*ngFor='let cmd of group.cmds', (dragover)='allowCommandDrop($event, cmd)', (drop)='dropCommand($event, cmd)')
+                span.drag-handle.mr-2([draggable]='!quickCmd', [class.disabled]='!!quickCmd', (dragstart)='startCommandDrag($event, cmd)', (dragend)='endDrag()', title='Drag to reorder command', aria-label='Drag to reorder command')
+                    i.fa.fa-grip-vertical
                 .mr-auto.command-content
                     div {{cmd.name}}
                     .text-muted

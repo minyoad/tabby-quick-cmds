@@ -33,3 +33,13 @@
     max-height: 220px;
     overflow: auto;
 }
+
+.drag-handle {
+    cursor: grab;
+    user-select: none;
+    opacity: 0.6;
+    flex-shrink: 0;
+}
+
+.drag-handle:active { cursor: grabbing; }
+.drag-handle.disabled { cursor: not-allowed; opacity: 0.25; }
