@@ -15,7 +15,8 @@
     "watch": "webpack --progress --color --watch",
     "pub": "npm run pack:zip",
     "pack:zip": "powershell Compress-Archive -Path dist,package.json,README.md,README_CN.md,LICENSE -DestinationPath tabby-quick-cmds-v$env:npm_package_version.zip -Force",
-    "prepublishOnly": "npm run build"
+    "prepublishOnly": "npm run build",
+    "test": "node tests/parameters.test.cjs && node tests/templates.test.cjs"
   },
   "files": [
     "dist"
@@ -36,7 +37,8 @@
     "to-string-loader": "^1.2.0",
     "typescript": "^4.6.3",
     "webpack": "^5.72.0",
-    "webpack-cli": "^4.9.2"
+    "webpack-cli": "^4.9.2",
+    "@angular/compiler": "15.2.10"
   },
   "peerDependencies": {
     "@angular/common": "^13.0.0",

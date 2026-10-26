@@ -107,3 +107,10 @@ name: "Git Commit"
 text: "git commit -m \"${message}\""
 appendCR: true
 ```
+
+
+Disable **Parse quick command parameters** in the command editor to send Bash expansions such as `${arr[@]}` and `${name}` unchanged. The stored property is `parseParameters: false`; omitted or `true` preserves parameter prompts. Menu execution and command shortcuts both use this setting, which is enabled by default. A command that mixes shell expansions and quick-command parameters still needs a distinct parameter syntax or explicit declarations in a future change.
+
+Each command and group has a **Hidden** toggle, disabled by default (`hidden` omitted or `false`). Hidden groups and commands are excluded from the quick selection menu, including search results. To show a command, turn Hidden off for both the command and its group (including Ungrouped). Existing entries without the field remain visible and usable. All entries remain editable in Settings, with direct Hidden toggles; hiding does not disable saved command shortcuts.
+
+The group editor also provides **Limit to SSH profiles**. It is enabled automatically for groups with existing profile bindings. Disabling it clears the group bindings when saved; individual command profile limits still apply.

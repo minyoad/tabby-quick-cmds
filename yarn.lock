@@ -16,6 +16,13 @@
   dependencies:
     tslib "^2.3.0"
 
+"@angular/compiler@15.2.10":
+  version "15.2.10"
+  resolved "https://registry.npmjs.org/@angular/compiler/-/compiler-15.2.10.tgz#bd78f327d12eb5978f9dd05440aa23d4b5b925a9"
+  integrity sha512-M0XkeU0O73UlJZwDvOyp8/apetz9UKj78eTFDseMYJDLcxe6MpkbkxqpsGZnKYDj7LIep8PmCAKEkhtenE82zw==
+  dependencies:
+    tslib "^2.3.0"
+
 "@angular/core@^15.2.6":
   version "15.2.10"
   resolved "https://registry.npmmirror.com/@angular/core/-/core-15.2.10.tgz#93c1e0d460d21711654c578d2709a402e1822023"

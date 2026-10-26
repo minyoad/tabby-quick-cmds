@@ -4,6 +4,7 @@ import { HotkeysService, ToolbarButtonProvider, IToolbarButton, ConfigService, A
 import { QuickCmdsModalComponent } from './components/quickCmdsModal.component'
 import { BaseTerminalTabComponent as TerminalTabComponent } from 'tabby-terminal';
 import { QuickCmds } from './api'
+import { sendWithParameters } from './parameters'
 import { commandVisibleForContext, getRuntimeSSHContext } from './sshScope'
 
 @Injectable()
@@ -117,8 +118,12 @@ export class ButtonProvider extends ToolbarButtonProvider {
     }
 
     async _send (tab: BaseTabComponent, quick_cmd: QuickCmds) {
+        await sendWithParameters(this.ngbModal, quick_cmd, cmd => this.executeSend(tab, cmd))
+    }
+
+    async executeSend (tab: BaseTabComponent, quick_cmd: QuickCmds) {
         if (tab instanceof SplitTabComponent) {
-            this._send((tab as SplitTabComponent).getFocusedTab(), quick_cmd)
+            await this.executeSend((tab as SplitTabComponent).getFocusedTab(), quick_cmd)
             return
         }
         if (!commandVisibleForContext(quick_cmd, this.getGroupScopes(), getRuntimeSSHContext(tab))) {

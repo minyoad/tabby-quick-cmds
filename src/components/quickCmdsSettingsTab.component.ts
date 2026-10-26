@@ -90,7 +90,7 @@ export class QuickCmdsSettingsTabComponent {
 
     editGroup (group: ICmdGroup) {
         const modal = this.ngbModal.open(EditGroupModalComponent)
-        modal.componentInstance.group = { name: group.name, cmds: group.cmds, profileIds: group.profileIds ?? [] }
+        modal.componentInstance.group = { name: group.name, cmds: group.cmds, hidden: group.hidden === true, profileIds: group.profileIds ?? [] }
         modal.componentInstance.profiles = this.profiles
         modal.result.then(result => {
             if (!result?.name) {
@@ -101,7 +101,7 @@ export class QuickCmdsSettingsTabComponent {
             for (let command of this.commands.filter(x => x.group === oldName)) {
                 command.group = result.name
             }
-            this.upsertGroupScope(result.name, result.profileIds ?? [])
+            this.upsertGroupScope(result.name, result.profileIds ?? [], result.hidden === true)
             if (oldName !== result.name) {
                 this.removeGroupScope(oldName)
             }
@@ -119,6 +119,17 @@ export class QuickCmdsSettingsTabComponent {
             this.config.save()
             this.refresh()
         }
+    }
+
+    setCommandHidden (command: QuickCmds, hidden: boolean) {
+        command.hidden = hidden
+        this.config.save()
+    }
+
+    setGroupHidden (group: ICmdGroup, hidden: boolean) {
+        group.hidden = hidden
+        this.upsertGroupScope(group.name, group.profileIds ?? [], hidden)
+        this.config.save()
     }
 
     cancelFilter(){
@@ -148,6 +159,7 @@ export class QuickCmdsSettingsTabComponent {
                     name: cmd.group,
                     cmds: [],
                     profileIds: this.getGroupScope(cmd.group).profileIds ?? [],
+                    hidden: this.getGroupScope(cmd.group).hidden === true,
                 }
                 this.childGroups.push(group)
             }
@@ -156,18 +168,19 @@ export class QuickCmdsSettingsTabComponent {
     }
 
     private getGroupScope (name: string): QuickCmdsGroupScope {
-        return (this.config.store.qc.groups ?? []).find(x => x.name === name) ?? { name, profileIds: [] }
+        return (this.config.store.qc.groups ?? []).find(x => (x.name || '') === (name || '')) ?? { name, profileIds: [] }
     }
 
-    private upsertGroupScope (name: string, profileIds: string[]) {
+    private upsertGroupScope (name: string, profileIds: string[], hidden: boolean) {
         const groups = this.config.store.qc.groups ?? []
-        const existing = groups.find(x => x.name === name)
+        const existing = groups.find(x => (x.name || '') === (name || ''))
         if (existing) {
             existing.profileIds = profileIds
+            existing.hidden = hidden
         } else {
-            groups.push({ name, profileIds })
+            groups.push({ name, profileIds, hidden })
         }
-        this.config.store.qc.groups = groups.filter(x => x.name || (x.profileIds ?? []).length)
+        this.config.store.qc.groups = groups.filter(x => x.name || x.hidden !== undefined || (x.profileIds ?? []).length)
     }
 
     private removeGroupScope (name: string) {

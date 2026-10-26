@@ -19,6 +19,7 @@ export class EditCommandModalComponent implements OnInit {
     isCapturingShortcut: boolean = false
     sshProfileQuery: string = ''
     specialCommandsInfo: string = 'Special commands:<br> \\x<xx> for control characters, \\s<ms> for delays, ${parameterName} for parameters.'
+    parameterParsingInfo: string = 'Disable to send shell variables such as ${name} and ${arr[@]} unchanged'
     sshEnabled: boolean = false
     private _groupSavedValue: string = ''
 
@@ -28,6 +29,8 @@ export class EditCommandModalComponent implements OnInit {
     }
 
     ngOnInit () {
+        this.command.hidden = this.command.hidden === true
+        this.command.parseParameters = this.command.parseParameters !== false
         this.sshEnabled = (this.command?.profileIds?.length ?? 0) > 0
     }
 

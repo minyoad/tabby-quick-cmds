@@ -64,6 +64,18 @@
 
     .form-line
         .header
+            .title Hidden
+            .description Hide this command from the quick selection menu
+        toggle([(ngModel)]='command.hidden')
+
+    .form-line
+        .header
+            .title Parse quick command parameters
+            .description {{ parameterParsingInfo }}
+        toggle([(ngModel)]='command.parseParameters')
+
+    .form-line
+        .header
             .title Limit to SSH profiles
             .description Only show this command in selected SSH terminal tabs
         toggle(

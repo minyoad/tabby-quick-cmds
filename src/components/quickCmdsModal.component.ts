@@ -5,7 +5,8 @@ import { ConfigService, AppService, BaseTabComponent, SplitTabComponent, Profile
 import { QuickCmds, ICmdGroup, SSHProfileOption } from '../api'
 import { EditCommandModalComponent } from './editCommandModal.component'
 import { BaseTerminalTabComponent as TerminalTabComponent } from 'tabby-terminal';
-import { ParameterPromptModalComponent } from './parameterPromptModal.component'
+import { sendWithParameters } from '../parameters'
+import { commandShownInMenu } from '../visibility'
 import { commandVisibleForContext, getRuntimeSSHContext } from '../sshScope'
 
 
@@ -110,30 +111,14 @@ export class QuickCmdsModalComponent {
         return new Promise(resolve => setTimeout(resolve, ms));
     }
 
-    async _send (tab: BaseTabComponent, quick_cmd: QuickCmds) {    
-        const regex = /\$\{(.*?)\}/g;
-        const found = quick_cmd.text.match(regex);
-
-        if (found) {
-            const modal = this.ngbModal.open(ParameterPromptModalComponent);
-            modal.componentInstance.parameters = found.map(x => ({ name: x.substring(2, x.length - 1), value: '' }));
-            modal.result.then(values => {
-                let text = quick_cmd.text;
-                for (const name in values) {
-                    text = text.replace(`\$\{${name}\}`, values[name]);
-                }
-                const newCmd = { ...quick_cmd, text };
-                this.executeSend(tab, newCmd);
-            });
-        } else {
-            this.executeSend(tab, quick_cmd);
-        }
+    async _send (tab: BaseTabComponent, quick_cmd: QuickCmds) {
+        await sendWithParameters(this.ngbModal, quick_cmd, cmd => this.executeSend(tab, cmd))
     }
 
     async executeSend (tab: BaseTabComponent, quick_cmd: QuickCmds) {
         
         if (tab instanceof SplitTabComponent) {
-            this._send((tab as SplitTabComponent).getFocusedTab(), quick_cmd)
+            await this.executeSend((tab as SplitTabComponent).getFocusedTab(), quick_cmd)
             return
         }
         if (!commandVisibleForContext(quick_cmd, this.getGroupScopes(), getRuntimeSSHContext(tab))) {
@@ -310,7 +295,7 @@ export class QuickCmdsModalComponent {
                 return (cmd.name + cmd.group + cmd.text).toLowerCase().includes(this.quickCmd.toLowerCase())
             }
             return true
-        }).filter(cmd => commandVisibleForContext(cmd, this.getGroupScopes(), getRuntimeSSHContext(this.app.activeTab)))
+        }).filter(cmd => commandShownInMenu(cmd, this.config.store.qc.groups ?? []) && commandVisibleForContext(cmd, this.getGroupScopes(), getRuntimeSSHContext(this.app.activeTab)))
 
         for (let cmd of cmds) {
             cmd.group = cmd.group || ''
@@ -359,7 +344,7 @@ export class QuickCmdsModalComponent {
         if (this.quickCmd) {
             // Filter commands that match the search query
             const filteredCmds = this.cmds.filter(cmd => (cmd.name + (cmd.group || '') + cmd.text).toLowerCase().includes(this.quickCmd.toLowerCase()))
-                .filter(cmd => commandVisibleForContext(cmd, this.getGroupScopes(), getRuntimeSSHContext(this.app.activeTab)))
+                .filter(cmd => commandShownInMenu(cmd, this.config.store.qc.groups ?? []) && commandVisibleForContext(cmd, this.getGroupScopes(), getRuntimeSSHContext(this.app.activeTab)))
             // Create a temporary set to track groups that contain filtered commands
             const groupsWithFilteredCmds = new Set<string>()
             filteredCmds.forEach(cmd => groupsWithFilteredCmds.add(cmd.group || ''))

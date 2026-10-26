@@ -10,7 +10,21 @@ import { profileMatchesQuery } from '../sshScope'
                 <label>Name</label>
                 <input class="form-control" type="text" autofocus [(ngModel)]="group.name">
             </div>
-            <div class="form-group mt-3">
+            <div class="form-line">
+                <div class="header">
+                    <div class="title">Hidden</div>
+                    <div class="description">Hide this group and its commands from the quick selection menu</div>
+                </div>
+                <toggle [(ngModel)]="group.hidden"></toggle>
+            </div>
+            <div class="form-line">
+                <div class="header">
+                    <div class="title">Limit to SSH profiles</div>
+                    <div class="description">Only show this group in selected SSH terminal tabs</div>
+                </div>
+                <toggle [(ngModel)]="sshEnabled" (ngModelChange)="onSshToggle()"></toggle>
+            </div>
+            <div class="form-group mt-3" *ngIf="sshEnabled">
                 <label>SSH profiles</label>
                 <div class="form-text text-muted mb-2">Leave empty to show this group in every terminal tab.</div>
                 <input class="form-control mb-2" type="text" placeholder="Search SSH profiles" [(ngModel)]="sshProfileQuery">
@@ -40,10 +54,16 @@ export class EditGroupModalComponent {
     @Input() group: ICmdGroup
     @Input() profiles: SSHProfileOption[] = []
     sshProfileQuery: string = ''
+    sshEnabled: boolean = false
 
     constructor (
         private modalInstance: NgbActiveModal,
     ) {
+    }
+
+    ngOnInit () {
+        this.group.hidden = this.group.hidden === true
+        this.sshEnabled = (this.group.profileIds?.length ?? 0) > 0
     }
 
     get filteredProfiles (): SSHProfileOption[] {
@@ -60,7 +80,17 @@ export class EditGroupModalComponent {
         this.group.profileIds = Array.from(ids)
     }
 
+    onSshToggle () {
+        if (!this.sshEnabled) {
+            this.group.profileIds = []
+        }
+    }
+
     save () {
+        if (!this.sshEnabled) {
+            this.group.profileIds = []
+        }
+        this.group.profileIds = this.group.profileIds ?? []
         this.modalInstance.close(this.group)
     }
 

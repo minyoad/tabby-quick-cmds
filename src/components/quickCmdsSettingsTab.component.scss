@@ -1,15 +1,32 @@
-.list-group-item {
-    position: relative;
-    padding-right: 100px; /* Add padding to prevent text from overlapping with buttons */
+.qc-row {
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.command-content {
+    flex: 1 1 180px;
+    min-width: 0;
+    overflow-wrap: anywhere;
+}
+
+.command-actions {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-left: auto;
+    flex-shrink: 0;
+}
+
+.visibility-control {
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
 
 .command-buttons {
-    position: absolute;
-    top: 50%;
-    right: 10px;
-    transform: translateY(-50%);
     display: flex;
-    gap: 5px; /* Add some space between the buttons */
+    align-items: center;
+    gap: 6px;
 }
 
 .ssh-profile-list {
